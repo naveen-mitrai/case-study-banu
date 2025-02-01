@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import { connectDB } from "./config/db.js";
 import medicationRoutes from "./routes/medication.route.js";
 import droneRoutes from "./routes/drone.route.js";
+import orderRoutes from "./routes/order.route.js";
 
 dotenv.config();
 
@@ -16,6 +17,7 @@ app.use(cors());
 
 app.use("/api/medications", medicationRoutes);
 app.use("/api/drones", droneRoutes);
+app.use("/api/orders", orderRoutes);
 
 app.listen(PORT, () => {
   connectDB();

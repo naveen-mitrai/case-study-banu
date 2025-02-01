@@ -8,8 +8,9 @@ const { Title } = Typography;
 
 const OrderForm = () => {
   const [allMedications, setMedications] = useState();
-  const [allDrones, setDrones] = useState();
   const [selectedMedications, setSelectedMedications] = useState([]);
+  const [allDrones, setDrones] = useState();
+  const [dronesAvailable, setAvailableDrones] = useState([]);
   const [totalWeight, setWeight] = useState(0);
   const [alertVisible, setAlertVisible] = useState(false);
   const [alertMessage, setAlertMessage] = useState(null);
@@ -53,6 +54,7 @@ const OrderForm = () => {
       setAlertVisible(false);
       setAlertMessage("");
     }
+    setAvailableDrones(dronesAvailable);
   };
 
   const fetchMedications = async () => {
@@ -85,13 +87,37 @@ const OrderForm = () => {
 
       const result = await response.json();
       const formattedOptions = result.data.map((drone) => ({
-        value: drone._id, // Unique key
-        label: `Drone ${drone._id}`, // Display name
+        value: drone.id, // Unique key
+        label: `Drone ${drone.id}`, // Display name
         weightLimit: drone.weightLimitInGrams,
         batteryCapacity: drone.batteryCapacity,
         state: drone.state,
+        batteryLevel: drone.batteryLevel,
       }));
       setDrones(formattedOptions);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  const placeOrder = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/api/orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json", // Send JSON data
+        },
+        body: JSON.stringify({
+          carrier: dronesAvailable[0].value,
+          items: selectedMedications,
+        }),
+      });
+
+      if (!response.ok) throw new Error("Failed to create order data");
+
+      const result = await response.json();
+      console.log("Response:", result);
+      navigate("/orders");
     } catch (error) {
       console.error("Error:", error);
     }
@@ -173,8 +199,11 @@ const OrderForm = () => {
               type="primary"
               htmlType="submit"
               onClick={() => {
-                // saveDrone();
+                placeOrder();
               }}
+              disabled={
+                selectedMedications.length == 0 || dronesAvailable.length == 0
+              }
             >
               Place Order
             </Button>

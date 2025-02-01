@@ -89,7 +89,24 @@ const DroneForm = () => {
             },
           ]}
         >
-          <Input placeholder="Enter in W" type="Number" />
+          <Input placeholder="Enter in mAh" type="Number" />
+        </Form.Item>
+        <Form.Item
+          name="batteryLevel"
+          label="Battery Level"
+          rules={[
+            {
+              required: true,
+            },
+            {
+              type: "Number",
+              min: 0,
+              max: 100,
+              message: "Battery level must be between 0 and 100",
+            },
+          ]}
+        >
+          <Input placeholder="Enter current battery level in %" type="Number" />
         </Form.Item>
         <Form.Item {...tailLayout}>
           <Space>

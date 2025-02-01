@@ -4,35 +4,36 @@ import { useNavigate } from "react-router-dom";
 
 const columns = [
   {
+    title: "ID",
+    dataIndex: "id",
+    width: "15%",
+  },
+  {
     title: "Model",
     dataIndex: "model",
     sorter: true,
-    // render: (name) => `${name.first} ${name.last}`,
-    width: "20%",
+    width: "15%",
   },
   {
-    title: "Weight Limit",
+    title: "Weight Limit (g)",
     dataIndex: "weightLimitInGrams",
     sorter: true,
-    // filters: [
-    //   {
-    //     text: "Male",
-    //     value: "male",
-    //   },
-    //   {
-    //     text: "Female",
-    //     value: "female",
-    //   },
-    // ],
-    width: "20%",
+    width: "15%",
   },
   {
-    title: "Battery Capacity",
+    title: "Battery Capacity (mAh)",
     dataIndex: "batteryCapacity",
+    width: "15%",
+  },
+  {
+    title: "Battery Level (%)",
+    dataIndex: "batteryLevel",
+    width: "15%",
   },
   {
     title: "Status",
     dataIndex: "state",
+    width: "15%",
   },
 ];
 
