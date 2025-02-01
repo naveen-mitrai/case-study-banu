@@ -5,7 +5,7 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import { Layout, Menu, theme } from "antd";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 const { Sider } = Layout;
 const items = [
@@ -13,31 +13,26 @@ const items = [
     key: "dashboard",
     icon: React.createElement(NotificationOutlined),
     label: "Dashboard",
-    link: "/drones",
   },
   {
     key: "drones",
     icon: React.createElement(NotificationOutlined),
-    label: "Drones",
-    link: "/drones",
+    label: <Link to="/drones">Drones</Link>,
   },
   {
-    key: "medicines",
+    key: "medications",
     icon: React.createElement(NotificationOutlined),
-    label: "Medicines",
-    link: "/drones",
+    label: <Link to="/medications">Medications</Link>,
   },
   {
     key: "delivery",
     icon: React.createElement(LaptopOutlined),
     label: "Delivery",
-    link: "/drones",
   },
   {
     key: "report",
     icon: React.createElement(UserOutlined),
     label: "Report",
-    link: "/drones",
   },
 ];
 
@@ -63,7 +58,6 @@ const NavBar = () => {
           borderRight: 0,
         }}
         items={items}
-        onClick={({ link }) => navigate("/drones")}
       />
     </Sider>
   );

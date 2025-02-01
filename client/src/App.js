@@ -10,6 +10,8 @@ import "./App.css";
 import NavBar from "./components/navBar";
 import Drones from "./pages/drones";
 import DroneForm from "./components/droneForm";
+import Medications from "./pages/medications";
+import MedicationForm from "./components/medicationForm";
 
 const { Header, Content, Sider } = Layout;
 const items1 = ["1", "2", "3"].map((key) => ({
@@ -64,6 +66,11 @@ function App() {
                   <Routes>
                     <Route path="/drones/new" element={<DroneForm />} />
                     <Route path="/drones" element={<Drones />} />
+                    <Route
+                      path="/medications/new"
+                      element={<MedicationForm />}
+                    />
+                    <Route path="/medications" element={<Medications />} />
                     {/* <Route path="/register" component={RegisterForm} />
             <Route path="/movies/:id" component={MovieForm} />
             <Route path="/movies" component={Movies} />
