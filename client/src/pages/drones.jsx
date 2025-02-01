@@ -98,10 +98,12 @@ const Drones = () => {
 
   return (
     <React.Fragment>
-      <Button type="primary" onClick={() => navigate("/drones/new")}>
-        Add Drone
-      </Button>
-      <h1>Drones</h1>
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <h1>Drones</h1>
+        <Button type="primary" onClick={() => navigate("/drones/new")}>
+          Add Drone
+        </Button>
+      </div>
       <Table
         columns={columns}
         rowKey={(record) => record._id}

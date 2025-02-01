@@ -102,10 +102,12 @@ const Medications = () => {
 
   return (
     <React.Fragment>
-      <Button type="primary" onClick={() => navigate("/medications/new")}>
-        Add Medication
-      </Button>
-      <h1>Medications</h1>
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <h1>Medications</h1>
+        <Button type="primary" onClick={() => navigate("/medications/new")}>
+          Add Medication
+        </Button>
+      </div>
       <Table
         columns={columns}
         rowKey={(record) => record._id}

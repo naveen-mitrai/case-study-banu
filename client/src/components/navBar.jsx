@@ -25,9 +25,9 @@ const items = [
     label: <Link to="/medications">Medications</Link>,
   },
   {
-    key: "delivery",
+    key: "orders",
     icon: React.createElement(LaptopOutlined),
-    label: "Delivery",
+    label: <Link to="/orders">Orders</Link>,
   },
   {
     key: "report",

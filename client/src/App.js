@@ -12,6 +12,8 @@ import Drones from "./pages/drones";
 import DroneForm from "./components/droneForm";
 import Medications from "./pages/medications";
 import MedicationForm from "./components/medicationForm";
+import OrderForm from "./components/orderForm";
+import Orders from "./pages/orders";
 
 const { Header, Content, Sider } = Layout;
 const items1 = ["1", "2", "3"].map((key) => ({
@@ -71,6 +73,8 @@ function App() {
                       element={<MedicationForm />}
                     />
                     <Route path="/medications" element={<Medications />} />
+                    <Route path="/orders/new" element={<OrderForm />} />
+                    <Route path="/orders" element={<Orders />} />
                     {/* <Route path="/register" component={RegisterForm} />
             <Route path="/movies/:id" component={MovieForm} />
             <Route path="/movies" component={Movies} />
