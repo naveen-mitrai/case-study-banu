@@ -10,7 +10,7 @@ router.get("/", async (req, res) => {
     const orders = await Order.find({});
     res.status(200).json({ success: true, data: orders });
   } catch (error) {
-    console.log("Error in fetching medications: ", error.message);
+    console.log("Error in fetching orders: ", error.message);
     return res.status(500).json({ success: false, message: "Server Error" });
   }
 });
@@ -38,7 +38,26 @@ router.post("/", async (req, res) => {
 
     return res.status(201).json({ success: true, data: newOrder });
   } catch (error) {
-    console.log("Error in Create medication: ", error.message);
+    console.log("Error in Create order: ", error.message);
+    return res.status(500).json({ success: false, message: "Server Error" });
+  }
+});
+
+// Only order status can be updated
+router.patch("/:id", async (req, res) => {
+  const orderID = req.params.id;
+  const order = req.body;
+  try {
+    await Order.updateOne({ id: orderID }, { $set: { state: order.state } });
+    // Update drone state
+    let currentOrder = await Order.findOne({ id: orderID });
+    await Drone.updateOne(
+      { id: currentOrder.carrier }, // Condition
+      { $set: { state: order.state } } // Update operation
+    );
+    return res.status(200).json({ success: true, data: currentOrder });
+  } catch (error) {
+    console.log("Error in Update order: ", error.message);
     return res.status(500).json({ success: false, message: "Server Error" });
   }
 });

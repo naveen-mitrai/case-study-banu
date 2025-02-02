@@ -7,6 +7,7 @@ const Dashboard = () => {
 
   const [droneData, setDroneData] = useState([]);
   const [medicationData, setMedicationData] = useState([]);
+  const [orderData, setOrderData] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const items = [
@@ -36,8 +37,8 @@ const Dashboard = () => {
     },
     {
       today: "Orders In Progress",
-      title: "+1,200",
-      persent: "-20%",
+      title: orderData.filter((ord) => ord.state != "DELIVERED").length,
+      //   persent: "-20%",
       //   icon: heart,
       bnb: "redtext",
     },
@@ -81,10 +82,27 @@ const Dashboard = () => {
     }
   };
 
+  const fetchOrderData = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/api/orders", {
+        method: "GET",
+      });
+
+      if (!response.ok) throw new Error("Failed to get order data");
+
+      const result = await response.json();
+      console.log("Response:", result);
+      setOrderData(result.data);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
   useEffect(() => {
     setLoading(true);
     fetchData();
     fetchMedicineData();
+    fetchOrderData();
     setLoading(false);
   }, []);
 
@@ -101,12 +119,17 @@ const Dashboard = () => {
       >
         <BarChart
           title="Battery level of Drones"
+          description="We have created multiple options for you to put together and
+                      customise into pixel perfect pages."
           items={items}
           xData={droneData.map((drone) => drone.id)}
           yData={droneData.map((drone) => drone.batteryLevel)}
         />
         <BarChart
           title="State of Drones"
+          description="We have created multiple options for you to put together and
+                      customise into pixel perfect pages."
+          //   description="Our drones progress through five key lifecycle stages: IDLE, LOADING, DELIVERING, DELIVERED, and RETURNING. This chart offers a real-time snapshot of their current distribution, enabling efficient monitoring and analysis. "
           items={[]}
           xData={statuses}
           yData={statuses.map(

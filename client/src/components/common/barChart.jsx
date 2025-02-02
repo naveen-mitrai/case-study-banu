@@ -3,7 +3,7 @@ import { Typography, Row, Col, Card } from "antd";
 import ReactApexChart from "react-apexcharts";
 const { Title, Paragraph } = Typography;
 
-const BarChart = ({ title, items, xData, yData }) => {
+const BarChart = ({ title, description, items, xData, yData }) => {
   const stateChart = {
     series: [
       {
@@ -106,10 +106,7 @@ const BarChart = ({ title, items, xData, yData }) => {
           <Title level={5} style={{ alignItems: "center" }}>
             {title}
           </Title>
-          <Paragraph className="lastweek">
-            We have created multiple options for you to put together and
-            customise into pixel perfect pages.
-          </Paragraph>
+          <Paragraph className="lastweek">{description}</Paragraph>
           <Row style={{ justifyContent: "space-around" }}>
             {items.map(({ title, user }, index) => (
               <Col xs={6} key={index}>

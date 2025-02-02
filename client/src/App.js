@@ -65,8 +65,8 @@ function App() {
                 }}
               >
                 <main className="container">
-                  {/* <Router> */}
                   <Routes>
+                    <Route path="/" element={<Dashboard />} />
                     <Route path="/drones/new" element={<DroneForm />} />
                     <Route path="/drones" element={<Drones />} />
                     <Route
@@ -77,16 +77,11 @@ function App() {
                     <Route path="/orders/new" element={<OrderForm />} />
                     <Route path="/orders" element={<Orders />} />
                     <Route path="/dashboard" element={<Dashboard />} />
-                    {/* <Route path="/register" component={RegisterForm} />
-            <Route path="/movies/:id" component={MovieForm} />
-            <Route path="/movies" component={Movies} />
-            <Route path="/customers" component={Customers} />
-            <Route path="/rentals" component={Rentals} />
-            <Route path="/not-found" component={NotFound} />
-            <Redirect from="/" exact to="movies" /> */}
-                    {/* <Redirect to="not-found" /> */}
+                    <Route
+                      path="*"
+                      element={<Navigate to="/dashboard" replace />}
+                    />
                   </Routes>
-                  {/* </Router> */}
                 </main>
               </Content>
             </Layout>

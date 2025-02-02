@@ -4,57 +4,11 @@ import { MoreOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import InfoBox from "../components/common/infoBox";
 
-const columns = [
-  {
-    title: "Order_ID",
-    dataIndex: "id",
-  },
-  {
-    title: "Drone_ID",
-    dataIndex: "carrier",
-  },
-  {
-    title: "Medications",
-    dataIndex: "items",
-    render: (arr) => {
-      return <>{arr.join(", ")}</>;
-    },
-  },
-  {
-    title: "Status",
-    dataIndex: "state",
-  },
-  {
-    title: "",
-    dataIndex: "action",
-    render: (text, record) => {
-      if (record.state != "DELIVERED") {
-        const statusToBeChanged = status[status.indexOf(record.state) + 1];
-        return (
-          <Button
-            variant="outlined"
-            color={statusToBeChanged == "DELIVERING" ? "primary" : "cyan"}
-            onClick={() => {
-              updateStatusChange(statusToBeChanged);
-            }}
-          >{`Mark As ${statusToBeChanged}`}</Button>
-        );
-      }
-    },
-  },
-];
-
 const status = ["LOADING", "DELIVERING", "DELIVERED"];
-
-const updateStatusChange = (statusToBeChanged) => {
-  console.log("in status", statusToBeChanged);
-
-  // TODO: Need to call update endpoint
-};
 
 const Orders = () => {
   const navigate = useNavigate();
-  const [data, setData] = useState();
+  const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [tableParams, setTableParams] = useState({
     pagination: {
@@ -62,6 +16,46 @@ const Orders = () => {
       pageSize: 5,
     },
   });
+
+  const columns = [
+    {
+      title: "Order_ID",
+      dataIndex: "id",
+    },
+    {
+      title: "Drone_ID",
+      dataIndex: "carrier",
+    },
+    {
+      title: "Medications",
+      dataIndex: "items",
+      render: (arr) => {
+        return <>{arr.join(", ")}</>;
+      },
+    },
+    {
+      title: "Status",
+      dataIndex: "state",
+    },
+    {
+      title: "",
+      dataIndex: "action",
+      render: (text, record) => {
+        if (record.state != "DELIVERED") {
+          const statusToBeChanged = status[status.indexOf(record.state) + 1];
+          return (
+            <Button
+              variant="outlined"
+              color={statusToBeChanged == "DELIVERING" ? "primary" : "cyan"}
+              onClick={() => {
+                updateStatusChange(record.id, statusToBeChanged);
+              }}
+            >{`Mark As ${statusToBeChanged}`}</Button>
+          );
+        }
+      },
+    },
+  ];
 
   const fetchData = async () => {
     setLoading(true);
@@ -112,46 +106,70 @@ const Orders = () => {
     }
   };
 
-  const count = [
+  const updateStatusChange = async (orderID, statusToBeChanged) => {
+    console.log("in status", statusToBeChanged);
+    console.log(orderID);
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/orders/${orderID}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            state: statusToBeChanged,
+          }),
+        }
+      );
+
+      if (!response.ok) throw new Error("Failed to update order data");
+
+      const result = await response.json();
+      console.log("Response:", result);
+      fetchData();
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  const cards = [
     {
-      today: "Total Drones",
-      title: "$53,000",
+      today: "Total Orders",
+      title: data.length,
       persent: "+30%",
-      //   icon: heart,
       bnb: "bnb2",
     },
     {
-      today: "Total Medications",
-      title: "3,200",
+      today: "Successful Orders",
+      title: data.filter((ord) => ord.state == "DELIVERED").length,
       persent: "+20%",
-      //   icon: heart,
       bnb: "bnb2",
     },
     {
-      today: "New Clients",
-      title: "+1,200",
-      persent: "-20%",
-      //   icon: heart,
+      today: "Orders In Progess",
+      title: data.filter((ord) => ord.state != "DELIVERED").length,
+      persent: "+20%",
       bnb: "redtext",
     },
     {
-      today: "New Orders",
+      today: "Total Revenue",
       title: "$13,200",
       persent: "10%",
-      //   icon: heart,
       bnb: "bnb2",
     },
   ];
 
   return (
     <React.Fragment>
-      <h1>Orders</h1>
-      <InfoBox infoItems={count} />
-      <Space>
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <h1>Orders</h1>
         <Button type="primary" onClick={() => navigate("/orders/new")}>
           Create new order
         </Button>
-      </Space>
+      </div>
+      <InfoBox infoItems={cards} />
+      <br></br>
       <Table
         columns={columns}
         rowKey={(record) => record._id}
