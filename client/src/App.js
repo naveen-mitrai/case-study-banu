@@ -16,6 +16,7 @@ import OrderForm from "./components/orderForm";
 import Orders from "./pages/orders";
 import Dashboard from "./pages/dashboard";
 import TopBar from "./components/topBar";
+import Report from "./pages/report";
 
 const { Content } = Layout;
 
@@ -57,6 +58,7 @@ function App() {
                     <Route path="/orders/new" element={<OrderForm />} />
                     <Route path="/orders" element={<Orders />} />
                     <Route path="/dashboard" element={<Dashboard />} />
+                    <Route path="/reports" element={<Report />} />
                     <Route
                       path="*"
                       element={<Navigate to="/dashboard" replace />}

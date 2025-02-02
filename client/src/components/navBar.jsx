@@ -32,7 +32,7 @@ const items = [
   {
     key: "report",
     icon: React.createElement(UserOutlined),
-    label: "Report",
+    label: <Link to="/reports">Report</Link>,
   },
 ];
 
