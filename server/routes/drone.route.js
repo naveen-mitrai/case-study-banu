@@ -1,6 +1,7 @@
 import express from "express";
 import { randomInt } from "mathjs";
 import Drone from "../models/drone.model.js";
+import BatteryAudit from "../models/batteryAudit.model.js";
 
 const router = express.Router();
 
@@ -31,7 +32,7 @@ router.post("/", async (req, res) => {
   }
 
   drone.state = "IDLE";
-  drone.id = generateId(6);
+  drone.id = generateId("DRN-", 6);
   const newDrone = new Drone(drone);
   try {
     await newDrone.save();
@@ -42,8 +43,8 @@ router.post("/", async (req, res) => {
   }
 });
 
-function generateId(length) {
-  let result = "DRN-";
+function generateId(prefix, length) {
+  let result = prefix;
   const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
   const charactersLength = characters.length;
   let counter = 0;
@@ -58,13 +59,28 @@ const drainDroneBattery = async () => {
   const drones = await Drone.find({
     state: { $in: ["DELIVERING", "RETURNING"] },
   });
+  let promises = [];
 
   for (let drone of drones) {
     let newBatteryLevel = Math.max(drone.batteryLevel - 2, 0);
-    await Drone.updateOne(
-      { id: drone.id },
-      { $set: { batteryLevel: newBatteryLevel } }
+    promises.push(
+      Drone.updateOne(
+        { id: drone.id },
+        { $set: { batteryLevel: newBatteryLevel } }
+      )
     );
+    const batteryAudit = {
+      id: generateId("AUD-", 6),
+      droneID: drone.id,
+      batteryLevel: newBatteryLevel,
+    };
+    const newAudit = new BatteryAudit(batteryAudit);
+    promises.push(newAudit.save());
+  }
+  try {
+    await Promise.all(promises);
+  } catch (error) {
+    console.log("Error in audit battery level: ", error.message);
   }
 };
 

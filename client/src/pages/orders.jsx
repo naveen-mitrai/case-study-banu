@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Button, Table, Space, Dropdown, Menu } from "antd";
-import { MoreOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import InfoBox from "../components/common/infoBox";
 

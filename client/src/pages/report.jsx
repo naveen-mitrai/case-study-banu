@@ -6,105 +6,6 @@ import { format } from "date-fns";
 const { RangePicker } = DatePicker;
 const { Option } = Select;
 
-const batteryLogs = [
-  {
-    id: "drone1",
-    status: "IDLE",
-    batteryLevel: "94",
-    updatedAt: "2024-01-12 09:08:27",
-  },
-  {
-    id: "drone2",
-    status: "IDLE",
-    batteryLevel: "20",
-    updatedAt: "2024-01-11 10:08:47",
-  },
-  {
-    id: "drone3",
-    status: "LOADING",
-    batteryLevel: "32",
-    updatedAt: "2024-10-11 09:08:36",
-  },
-  {
-    id: "drone4",
-    status: "DELIVERED",
-    batteryLevel: "45",
-    updatedAt: "2024-10-11 09:08:47",
-  },
-  {
-    id: "drone5",
-    status: "IDLE",
-    batteryLevel: "20",
-    updatedAt: "2024-10-11 09:08:38",
-  },
-  {
-    id: "drone6",
-    status: "IDLE",
-    batteryLevel: "44",
-    updatedAt: "2024-10-11 09:08:34",
-  },
-  {
-    id: "drone7",
-    status: "LOADING",
-    batteryLevel: "98",
-    updatedAt: "2024-10-11 09:08:54",
-  },
-  {
-    id: "drone8",
-    status: "DELIVERED",
-    batteryLevel: "85",
-    updatedAt: "2024-10-11 09:08:24",
-  },
-  {
-    id: "drone9",
-    status: "IDLE",
-    batteryLevel: "35",
-    updatedAt: "2024-10-11 09:08:12",
-  },
-  {
-    id: "drone10",
-    status: "IDLE",
-    batteryLevel: "54",
-    updatedAt: "2024-10-11 09:08:34",
-  },
-  {
-    id: "dron11",
-    status: "LOADING",
-    batteryLevel: "58",
-    updatedAt: "2024-10-11 09:08:24",
-  },
-  {
-    id: "drone12",
-    status: "DELIVERED",
-    batteryLevel: "37",
-    updatedAt: "2024-10-11 09:08:28",
-  },
-  {
-    id: "drone13",
-    status: "IDLE",
-    batteryLevel: "95",
-    updatedAt: "2024-10-11 09:08:54",
-  },
-  {
-    id: "drone14",
-    status: "IDLE",
-    batteryLevel: "60",
-    updatedAt: "2024-10-11 09:08:45",
-  },
-  {
-    id: "drone15",
-    status: "LOADING",
-    batteryLevel: "30",
-    updatedAt: "2024-10-11 09:08:39",
-  },
-  {
-    id: "drone16",
-    status: "DELIVERED",
-    batteryLevel: "90",
-    updatedAt: "2024-10-11 09:08:29",
-  },
-];
-
 const droneStatesColumns = [
   { title: "Drone ID", dataIndex: "id", key: "id" },
   { title: "State", dataIndex: "state", key: "state" },
@@ -116,13 +17,23 @@ const droneStatesColumns = [
 ];
 
 const droneBatteryLogsColumns = [
-  { title: "Drone ID", dataIndex: "id", key: "id" },
+  { title: "Drone ID", dataIndex: "droneID", key: "droneID" },
   {
     title: "Battery Level (%)",
     dataIndex: "batteryLevel",
     key: "batteryLevel",
   },
-  { title: "Updated At", dataIndex: "updatedAt", key: "updatedAt" },
+  {
+    title: "Updated At",
+    dataIndex: "createdAt",
+    key: "createdAt",
+
+    sorter: (a, b) => {
+      const dateA = new Date(a.createdAt);
+      const dateB = new Date(b.createdAt);
+      return dateA.getTime() - dateB.getTime();
+    },
+  },
 ];
 
 const layout = {
@@ -143,6 +54,7 @@ const Report = () => {
   const [showTables, setShowTables] = useState(false);
   const [selectedReportType, setSelectedReportType] = useState(null);
   const [droneStates, setDroneStates] = useState([]);
+  const [auditLogs, setAuditLogs] = useState([]);
 
   const [form] = Form.useForm();
 
@@ -151,6 +63,15 @@ const Report = () => {
 
   const onGenerateReport = () => {
     setShowTables(true);
+    if (selectedReportType === "droneBatteryLogs") {
+      const { range } = form.getFieldsValue();
+      const filtered = auditLogs.filter(
+        (elem) =>
+          new Date(elem.createdAt.replace(" at ", " ")) >= new Date(range[0]) &&
+          new Date(elem.createdAt.replace(" at ", " ")) <= new Date(range[1])
+      );
+      setAuditLogs(filtered);
+    }
   };
 
   const onClickDownloadPDF = () => {
@@ -165,15 +86,11 @@ const Report = () => {
       endTime = range[1].format("YYYY-MM-DD HH:mm:ss");
       generatePDF(
         logTableColumn,
-        batteryLogs.map((drone) => [
-          drone.id,
-          drone.batteryLevel,
-          drone.updatedAt,
-        ]),
-        `Battery level log for the given specified time period: \n${format(
+        auditLogs.map((log) => [log.droneID, log.batteryLevel]),
+        `Battery level log for the given specified time period: \nFrom ${format(
           new Date(startTime),
-          "yyyy-MM-dd HH:mm:ss"
-        )} - ${format(new Date(endTime), "yyyy-MM-dd HH:mm:ss")}`,
+          "yyyy-MM-dd 'at' HH:mm:ss"
+        )} To ${format(new Date(endTime), "yyyy-MM-dd 'at' HH:mm:ss")}`,
         selectedReportType
       );
     } else {
@@ -214,8 +131,32 @@ const Report = () => {
     }
   };
 
+  const fetchAuditLogs = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/api/logs", {
+        method: "GET",
+      });
+
+      if (!response.ok) throw new Error("Failed to get audit logs");
+
+      const result = await response.json();
+      const formattedOptions = result.data.map((log) => ({
+        droneID: log.droneID,
+        batteryLevel: log.batteryLevel,
+        createdAt: `${format(
+          new Date(log.createdAt),
+          "yyyy-MM-dd 'at' HH:mm:ss"
+        )}`,
+      }));
+      setAuditLogs(formattedOptions);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
   useEffect(() => {
     fetchDrones();
+    fetchAuditLogs();
   }, []);
 
   return (
@@ -291,7 +232,7 @@ const Report = () => {
         <div>
           <h3>Battery Logs</h3>
           <Table
-            dataSource={batteryLogs}
+            dataSource={auditLogs}
             columns={droneBatteryLogsColumns}
             rowKey="id"
             pagination={false}
