@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Button, Table, Space } from "antd";
+import { Button, Table, Space, Dropdown, Menu } from "antd";
+import { MoreOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import InfoBox from "../components/common/infoBox";
 
@@ -23,7 +24,33 @@ const columns = [
     title: "Status",
     dataIndex: "state",
   },
+  {
+    title: "",
+    dataIndex: "action",
+    render: (text, record) => {
+      if (record.state != "DELIVERED") {
+        const statusToBeChanged = status[status.indexOf(record.state) + 1];
+        return (
+          <Button
+            variant="outlined"
+            color={statusToBeChanged == "DELIVERING" ? "primary" : "cyan"}
+            onClick={() => {
+              updateStatusChange(statusToBeChanged);
+            }}
+          >{`Mark As ${statusToBeChanged}`}</Button>
+        );
+      }
+    },
+  },
 ];
+
+const status = ["LOADING", "DELIVERING", "DELIVERED"];
+
+const updateStatusChange = (statusToBeChanged) => {
+  console.log("in status", statusToBeChanged);
+
+  // TODO: Need to call update endpoint
+};
 
 const Orders = () => {
   const navigate = useNavigate();
@@ -85,10 +112,41 @@ const Orders = () => {
     }
   };
 
+  const count = [
+    {
+      today: "Total Drones",
+      title: "$53,000",
+      persent: "+30%",
+      //   icon: heart,
+      bnb: "bnb2",
+    },
+    {
+      today: "Total Medications",
+      title: "3,200",
+      persent: "+20%",
+      //   icon: heart,
+      bnb: "bnb2",
+    },
+    {
+      today: "New Clients",
+      title: "+1,200",
+      persent: "-20%",
+      //   icon: heart,
+      bnb: "redtext",
+    },
+    {
+      today: "New Orders",
+      title: "$13,200",
+      persent: "10%",
+      //   icon: heart,
+      bnb: "bnb2",
+    },
+  ];
+
   return (
     <React.Fragment>
       <h1>Orders</h1>
-      <InfoBox></InfoBox>
+      <InfoBox infoItems={count} />
       <Space>
         <Button type="primary" onClick={() => navigate("/orders/new")}>
           Create new order

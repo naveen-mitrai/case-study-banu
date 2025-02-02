@@ -12,7 +12,7 @@ const items = [
   {
     key: "dashboard",
     icon: React.createElement(NotificationOutlined),
-    label: "Dashboard",
+    label: <Link to="/dashboard">Dashboard</Link>,
   },
   {
     key: "drones",

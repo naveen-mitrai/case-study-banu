@@ -1,12 +1,13 @@
+import React from "react";
 import { Card, Row, Col, Typography } from "antd";
 
 const { Title } = Typography;
 
-const InfoBox = () => {
+const InfoBox = ({ infoItems }) => {
   return (
     <>
       <Row className="rowgap-vbox" gutter={[24, 0]}>
-        {count.map((c, index) => {
+        {infoItems.map((c, index) => {
           return (
             <Col
               key={index}
@@ -20,7 +21,7 @@ const InfoBox = () => {
               <Card
                 bordered={false}
                 className="criclebox"
-                style={{ backgroundColor: "#D3D3D3" }}
+                style={{ backgroundColor: "#F0F0F0" }}
               >
                 <div className="number">
                   <Row align="middle" gutter={[24, 0]}>
@@ -62,35 +63,4 @@ const heart = [
       fill="#fff"
     ></path>
   </svg>,
-];
-
-const count = [
-  {
-    today: "Total Drones",
-    title: "$53,000",
-    persent: "+30%",
-    icon: heart,
-    bnb: "bnb2",
-  },
-  {
-    today: "Total Medications",
-    title: "3,200",
-    persent: "+20%",
-    icon: heart,
-    bnb: "bnb2",
-  },
-  {
-    today: "New Clients",
-    title: "+1,200",
-    persent: "-20%",
-    icon: heart,
-    bnb: "redtext",
-  },
-  {
-    today: "New Orders",
-    title: "$13,200",
-    persent: "10%",
-    icon: heart,
-    bnb: "bnb2",
-  },
 ];
