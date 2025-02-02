@@ -5,7 +5,7 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-import { Layout, Menu, theme } from "antd";
+import { Layout, theme } from "antd";
 import "./App.css";
 import NavBar from "./components/navBar";
 import Drones from "./pages/drones";
@@ -15,12 +15,9 @@ import MedicationForm from "./components/medicationForm";
 import OrderForm from "./components/orderForm";
 import Orders from "./pages/orders";
 import Dashboard from "./pages/dashboard";
+import TopBar from "./components/topBar";
 
-const { Header, Content, Sider } = Layout;
-const items1 = ["1", "2", "3"].map((key) => ({
-  key,
-  label: `nav ${key}`,
-}));
+const { Content } = Layout;
 
 function App() {
   const {
@@ -29,24 +26,7 @@ function App() {
   return (
     <React.Fragment>
       <Layout>
-        {/* <Header
-          style={{
-            display: "flex",
-            alignItems: "center",
-          }}
-        >
-          <div className="demo-logo" />
-          <Menu
-            theme="dark"
-            mode="horizontal"
-            defaultSelectedKeys={["2"]}
-            items={items1}
-            style={{
-              flex: 1,
-              minWidth: 0,
-            }}
-          />
-        </Header> */}
+        <TopBar />
         <Layout>
           <Router>
             <NavBar />

@@ -54,4 +54,20 @@ function generateId(length) {
   return result;
 }
 
+const drainDroneBattery = async () => {
+  const drones = await Drone.find({
+    state: { $in: ["DELIVERING", "RETURNING"] },
+  });
+
+  for (let drone of drones) {
+    let newBatteryLevel = Math.max(drone.batteryLevel - 2, 0);
+    await Drone.updateOne(
+      { id: drone.id },
+      { $set: { batteryLevel: newBatteryLevel } }
+    );
+  }
+};
+
+setInterval(drainDroneBattery, 60000);
+
 export default router;
