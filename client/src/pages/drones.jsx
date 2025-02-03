@@ -2,41 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Button, Table } from "antd";
 import { useNavigate } from "react-router-dom";
 
-const columns = [
-  {
-    title: "ID",
-    dataIndex: "id",
-    width: "15%",
-  },
-  {
-    title: "Model",
-    dataIndex: "model",
-    sorter: true,
-    width: "15%",
-  },
-  {
-    title: "Weight Limit (g)",
-    dataIndex: "weightLimitInGrams",
-    sorter: true,
-    width: "15%",
-  },
-  {
-    title: "Battery Capacity (mAh)",
-    dataIndex: "batteryCapacity",
-    width: "15%",
-  },
-  {
-    title: "Battery Level (%)",
-    dataIndex: "batteryLevel",
-    width: "15%",
-  },
-  {
-    title: "Status",
-    dataIndex: "state",
-    width: "15%",
-  },
-];
-
 const Drones = () => {
   const navigate = useNavigate();
   const [data, setData] = useState();
@@ -47,6 +12,84 @@ const Drones = () => {
       pageSize: 10,
     },
   });
+
+  const columns = [
+    {
+      title: "ID",
+      dataIndex: "id",
+      width: "15%",
+    },
+    {
+      title: "Model",
+      dataIndex: "model",
+      width: "15%",
+    },
+    {
+      title: "Weight Limit (g)",
+      dataIndex: "weightLimitInGrams",
+      sorter: true,
+      width: "15%",
+    },
+    {
+      title: "Battery Capacity (mAh)",
+      dataIndex: "batteryCapacity",
+      width: "15%",
+    },
+    {
+      title: "Battery Level (%)",
+      dataIndex: "batteryLevel",
+      width: "15%",
+    },
+    {
+      title: "Status",
+      dataIndex: "state",
+      width: "15%",
+    },
+    {
+      title: "",
+      dataIndex: "action",
+      render: (text, record) => {
+        if (record.state == "DELIVERED" || record.state == "RETURNING") {
+          const statusToBeChanged =
+            record.state == "DELIVERED" ? "RETURNING" : "IDLE";
+          return (
+            <Button
+              variant="outlined"
+              color={statusToBeChanged == "RETURNING" ? "primary" : "cyan"}
+              onClick={() => {
+                updateStatusChange(record.id, statusToBeChanged);
+              }}
+            >{`Mark As ${statusToBeChanged}`}</Button>
+          );
+        }
+      },
+    },
+  ];
+
+  const updateStatusChange = async (droneID, statusToBeChanged) => {
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/drones/${droneID}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            state: statusToBeChanged,
+          }),
+        }
+      );
+
+      if (!response.ok) throw new Error("Failed to update drone data");
+
+      const result = await response.json();
+      console.log("Response:", result);
+      fetchData();
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
 
   const fetchData = async () => {
     setLoading(true);

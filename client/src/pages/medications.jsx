@@ -6,7 +6,6 @@ const columns = [
   {
     title: "Name",
     dataIndex: "name",
-    sorter: true,
     width: "20%",
   },
   {
@@ -18,26 +17,8 @@ const columns = [
     title: "Weight (grams)",
     dataIndex: "weightInGrams",
     sorter: true,
-    // filters: [
-    //   {
-    //     text: "Male",
-    //     value: "male",
-    //   },
-    //   {
-    //     text: "Female",
-    //     value: "female",
-    //   },
-    // ],
     width: "20%",
   },
-  //   {
-  //     title: "Battery Capacity",
-  //     dataIndex: "batteryCapacity",
-  //   },
-  //   {
-  //     title: "Status",
-  //     dataIndex: "state",
-  //   },
 ];
 
 const Medications = () => {

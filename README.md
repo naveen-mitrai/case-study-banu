@@ -1,48 +1,92 @@
-# Drone Medication Delivery System
-## Introduction
-The rapid advancement of drone technology offers unprecedented opportunities in delivering essential supplies like medications. This project involves designing a system to manage and monitor a fleet of drones tasked with delivering medications. The goal is to build a full-stack solution that integrates APIs, a dashboard, and reporting features.
+# MEDIDRONE - A Node.js JavaScript Project
 
----
-## Functional Requirements
-1) Core Drone Operations:
-   Create RESTful APIs (preferably, using serverless v3 framework) to:
-   - Register a new drone with unique identifiers (ID, model, weight limit, battery capacity).
-   - Manage drone states (IDLE, LOADING, DELIVERING, DELIVERED, RETURNING).
-   - Load medication items onto a drone. Each medication has a name, weight, and unique code (alphanumeric).
-2) Business Rules:
-   - Prevent loading a drone if the total weight of medications exceeds its weight limit.
-   - Disallow drones from entering the LOADING state if the battery level is below 25%.
-3) Simulate Drone Battery Draining:
+This document provides instructions on how to set up and run MEDIDRONE locally.
 
-   Implement a scheduled process that:
-   - Drains drone battery levels of all drones that are in DELIVERING and RETURNING states.
-   - Logs battery statuses into an audit table.
-4) Data Dashboard:
+## Prerequisites
 
-   Build a simple React-based dashboard that:
-   - Displays the current battery levels of all drones in a single bar chart.
-   - No of drones in each state in another bar chart
-5) Reporting:
+Ensure you have the following installed on your system:
 
-   Implement functionality to generate a report (optionally a PDF report):
-   - Containing the list of all drones and their statuses.
-   - Include battery level logs within a user-specified time range.
+- [Node.js](https://nodejs.org/) (LTS version recommended)
 
-## Non-Functional Requirements
-1) Data Format:
-   - API requests and responses must be in JSON format.
-2) Project Build and Run:
-   - The application must be easily buildable and runnable.
-   - Include a README file with clear instructions on how to:
-     - Set up the environment.
-     - Build and run the application.
-     - Run any available tests.
-   - Use a database (e.g., in-memory SQLite, MongoDB via Docker, etc.) with preloaded reference and dummy data.
-3) Technology Stack:
-   - Backend: Node.js (with the Serverless v3 Framework using serverless-offline or any familiar framework).
-   - Frontend: React.js (with Minimals UI) for the dashboard.
-   - Database: Developer’s choice (NoSQL or SQL).
-   - Optionally:
-     - Libraries such as pdfkit or puppeteer for PDF generation.
-     - Unit tests for critical functionalities
-     - Commit History: Demonstrate how you work through well-documented and logical commits.
+## Setup Instructions
+
+### 1. Clone the Repository
+
+```sh
+git clone <repository-url>
+cd <project-directory>
+```
+
+### 2. Install Dependencies
+
+```sh
+npm install
+```
+
+### 3. Configure Environment Variables
+
+Create a `.env` file in the root directory and add the required environment variables:
+
+```sh
+PORT=3000
+MONGO_URI=<mongo_uri>
+```
+
+Modify values as needed.
+
+### 4. Run the Project
+
+#### To run API endpoints and database (Backend)
+
+```sh
+npm run dev
+```
+
+#### To start User Interface
+
+```sh
+cd client
+npm start
+```
+
+## Additional Notes
+
+- Ensure MongoDB is running before starting the project.
+
+## Assumptions
+
+1. **Maximum Drone Carrying Capacity**: 1kg
+2. **Battery Capacity**:
+   - Minimum: 2,000mAh
+   - Maximum: 10,000mAh
+3. **Battery Drainage**:
+   - The drone's battery drains linearly from 100% to 0%.
+   - A background scheduled job runs every **minute**, reducing battery level by **2%** for drones are in **DELIVERING** or **RETURNING** states, regardless of drone capacity.
+4. **Order Delivery**:
+   - All orders are transported from **Source A** to **Destination B**.
+5. **Order Status Flow**:
+   - **LOADING → DELIVERING → DELIVERED**
+6. The system will select a drone for the given orders based on the weight of the medication and the availability of drones.
+
+## Features
+
+1. **Drone Management**
+   - Create and view drones.
+2. **Medication Management**
+   - Create and view medication details.
+3. **Order Management**
+   - Create and view orders.
+   - Orders start in **LOADING** state and can transition to **DELIVERING** and **DELIVERED** via UI.
+4. **Dashboard**
+   - Provides an overview of the system with summary charts:
+     - **Drone count by status** (LOADING, DELIVERING, DELIVERED, etc.).
+     - **Battery levels of drones**.
+5. **Report Generation**
+   - **Drone Status Report**: View the status of all drones.
+   - **Battery Level Log Report**: Generate a PDF report of battery levels within a user-specified time range.
+
+## Technology Stack
+
+- **Frontend**: ReactJS + Ant Design (UI Framework)
+- **Backend**: Node.js + Express.js
+- **Database**: MongoDB

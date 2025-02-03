@@ -16,8 +16,10 @@ const Dashboard = () => {
       user: "Total No of Drones",
     },
     {
-      title: droneData.filter((drone) => drone.batteryLevel > 25).length,
-      user: "No of Drones, battery > 25",
+      title: droneData.filter(
+        (drone) => drone.batteryLevel > 25 && drone.state == "IDLE"
+      ).length,
+      user: "No of Available Drones",
     },
   ];
   const infoItems = [
@@ -44,7 +46,9 @@ const Dashboard = () => {
     },
     {
       today: "Available Drones",
-      title: droneData.filter((drone) => drone.batteryLevel > 25).length,
+      title: droneData.filter(
+        (drone) => drone.batteryLevel > 25 && drone.state == "IDLE"
+      ).length,
       //   persent: "10%",
       //   icon: heart,
       bnb: "bnb2",
@@ -119,16 +123,14 @@ const Dashboard = () => {
       >
         <BarChart
           title="Battery level of Drones"
-          description="We have created multiple options for you to put together and
-                      customise into pixel perfect pages."
+          description="Current battery level of each drone is shown in this chart. Battery level is in %. should be less than 100"
           items={items}
           xData={droneData.map((drone) => drone.id)}
           yData={droneData.map((drone) => drone.batteryLevel)}
         />
         <BarChart
           title="State of Drones"
-          description="We have created multiple options for you to put together and
-                      customise into pixel perfect pages."
+          description="Number of drones in each state is shown in this chart. Each bar show it's number when you hover the bar"
           //   description="Our drones progress through five key lifecycle stages: IDLE, LOADING, DELIVERING, DELIVERED, and RETURNING. This chart offers a real-time snapshot of their current distribution, enabling efficient monitoring and analysis. "
           items={[]}
           xData={statuses}

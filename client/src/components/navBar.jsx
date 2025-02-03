@@ -1,43 +1,44 @@
 import React from "react";
 import {
-  LaptopOutlined,
-  NotificationOutlined,
-  UserOutlined,
+  HomeOutlined,
+  MedicineBoxOutlined,
+  ShoppingCartOutlined,
+  BarChartOutlined,
+  ThunderboltOutlined,
 } from "@ant-design/icons";
 import { Layout, Menu, theme } from "antd";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const { Sider } = Layout;
 const items = [
   {
     key: "dashboard",
-    icon: React.createElement(NotificationOutlined),
+    icon: React.createElement(HomeOutlined),
     label: <Link to="/dashboard">Dashboard</Link>,
   },
   {
     key: "drones",
-    icon: React.createElement(NotificationOutlined),
+    icon: React.createElement(ThunderboltOutlined),
     label: <Link to="/drones">Drones</Link>,
   },
   {
     key: "medications",
-    icon: React.createElement(NotificationOutlined),
+    icon: React.createElement(MedicineBoxOutlined),
     label: <Link to="/medications">Medications</Link>,
   },
   {
     key: "orders",
-    icon: React.createElement(LaptopOutlined),
+    icon: React.createElement(ShoppingCartOutlined),
     label: <Link to="/orders">Orders</Link>,
   },
   {
     key: "report",
-    icon: React.createElement(UserOutlined),
+    icon: React.createElement(BarChartOutlined),
     label: <Link to="/reports">Report</Link>,
   },
 ];
 
 const NavBar = () => {
-  const navigate = useNavigate();
   const {
     token: { colorBgContainer },
   } = theme.useToken();

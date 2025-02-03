@@ -13,6 +13,7 @@ const droneStatesColumns = [
     title: "Battery Level (%)",
     dataIndex: "batteryLevel",
     key: "batteryLevel",
+    sorter: (a, b) => a.batteryLevel - b.batteryLevel,
   },
 ];
 
@@ -22,17 +23,18 @@ const droneBatteryLogsColumns = [
     title: "Battery Level (%)",
     dataIndex: "batteryLevel",
     key: "batteryLevel",
+    sorter: (a, b) => a.batteryLevel - b.batteryLevel,
   },
   {
     title: "Updated At",
     dataIndex: "createdAt",
     key: "createdAt",
 
-    sorter: (a, b) => {
-      const dateA = new Date(a.createdAt);
-      const dateB = new Date(b.createdAt);
-      return dateA.getTime() - dateB.getTime();
-    },
+    sorter: (a, b) =>
+      new Date(a.createdAt.replace(" at ", "T")) -
+      new Date(b.createdAt.replace(" at ", "T")),
+    sortDirections: ["descend", "ascend"],
+    defaultSortOrder: "descend",
   },
 ];
 
@@ -160,86 +162,90 @@ const Report = () => {
   }, []);
 
   return (
-    <Form {...layout} form={form} name="control-hooks">
-      <Form.Item
-        name="reportType"
-        label="Select Report"
-        rules={[
-          {
-            required: true,
-          },
-        ]}
-      >
-        <Select
-          placeholder="Select a option and change input text above"
-          onChange={onReportChange}
-          allowClear
-        >
-          <Option value="droneStatus">Status of Drones</Option>
-          <Option value="droneBatteryLogs">
-            Audit table for Drone battery level
-          </Option>
-        </Select>
-      </Form.Item>
-      {selectedReportType == "droneBatteryLogs" && (
+    <div>
+      <h1>Generate Reports</h1>
+      <Form {...layout} form={form} name="control-hooks">
         <Form.Item
-          name="range"
-          label="Select Date Time Range:"
+          name="reportType"
+          label="Select Type of Report"
           rules={[
             {
               required: true,
             },
           ]}
         >
-          <RangePicker showTime />
-        </Form.Item>
-      )}
-
-      <Form.Item {...tailLayout}>
-        <Space>
-          <Button
-            type="primary"
-            htmlType="submit"
-            onClick={() => onGenerateReport()}
-            disabled={!selectedReportType}
+          <Select
+            placeholder="Select a option and change input text above"
+            onChange={onReportChange}
+            allowClear
+            style={{ width: "50%" }}
           >
-            Generate Report
-          </Button>
-          {showTables && (
-            <Button
-              color="cyan"
-              variant="outlined"
-              onClick={() => onClickDownloadPDF()}
-            >
-              Download Report as PDF
-            </Button>
-          )}
-        </Space>
-      </Form.Item>
+            <Option value="droneStatus">Status of Drones</Option>
+            <Option value="droneBatteryLogs">
+              Audit table for Drone battery level
+            </Option>
+          </Select>
+        </Form.Item>
+        {selectedReportType == "droneBatteryLogs" && (
+          <Form.Item
+            name="range"
+            label="Select Date Time Range:"
+            rules={[
+              {
+                required: true,
+              },
+            ]}
+          >
+            <RangePicker showTime />
+          </Form.Item>
+        )}
 
-      {showTables && selectedReportType == "droneStatus" && (
-        <div>
-          <h3>Drone Status</h3>
-          <Table
-            dataSource={droneStates}
-            columns={droneStatesColumns}
-            rowKey="id"
-            pagination={false}
-          />
-        </div>
-      )}
-      {showTables && selectedReportType == "droneBatteryLogs" && (
-        <div>
-          <h3>Battery Logs</h3>
-          <Table
-            dataSource={auditLogs}
-            columns={droneBatteryLogsColumns}
-            rowKey="id"
-            pagination={false}
-          />
-        </div>
-      )}
-    </Form>
+        <Form.Item {...tailLayout}>
+          <Space>
+            <Button
+              type="primary"
+              htmlType="submit"
+              onClick={() => onGenerateReport()}
+              disabled={!selectedReportType}
+            >
+              Generate Report
+            </Button>
+            {showTables && (
+              <Button
+                color="cyan"
+                variant="outlined"
+                onClick={() => onClickDownloadPDF()}
+              >
+                Download Report as PDF
+              </Button>
+            )}
+          </Space>
+        </Form.Item>
+
+        {showTables && selectedReportType == "droneStatus" && (
+          <div>
+            <h3>Drone Status</h3>
+            <Table
+              dataSource={droneStates}
+              columns={droneStatesColumns}
+              rowKey="id"
+              pagination={false}
+            />
+          </div>
+        )}
+        {showTables && selectedReportType == "droneBatteryLogs" && (
+          <div>
+            <h3>Battery Logs</h3>
+            <Table
+              dataSource={auditLogs}
+              columns={droneBatteryLogsColumns}
+              rowKey="id"
+              pagination={false}
+            />
+          </div>
+        )}
+      </Form>
+    </div>
   );
 };
 export default Report;

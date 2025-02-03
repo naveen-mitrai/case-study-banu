@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Button, Table, Space, Dropdown, Menu } from "antd";
 import { useNavigate } from "react-router-dom";
 import InfoBox from "../components/common/infoBox";
+import { format } from "date-fns";
 
 const status = ["LOADING", "DELIVERING", "DELIVERED"];
 
@@ -20,6 +21,20 @@ const Orders = () => {
     {
       title: "Order_ID",
       dataIndex: "id",
+    },
+    {
+      title: "Updated At",
+      dataIndex: "createdAt",
+      key: "createdAt",
+      sorter: (a, b) => {
+        const dateA = new Date(a.createdAt);
+        const dateB = new Date(b.createdAt);
+        return dateA - dateB;
+      },
+      defaultSortOrder: "descend",
+      render: (text) => {
+        return <>{format(new Date(text), "yyyy-MM-dd 'at' HH:mm:ss")}</>;
+      },
     },
     {
       title: "Drone_ID",
@@ -86,8 +101,6 @@ const Orders = () => {
   }, [
     tableParams.pagination?.current,
     tableParams.pagination?.pageSize,
-    tableParams?.sortOrder,
-    tableParams?.sortField,
     JSON.stringify(tableParams.filters),
   ]);
 
@@ -136,25 +149,21 @@ const Orders = () => {
     {
       today: "Total Orders",
       title: data.length,
-      persent: "+30%",
       bnb: "bnb2",
     },
     {
       today: "Successful Orders",
       title: data.filter((ord) => ord.state == "DELIVERED").length,
-      persent: "+20%",
       bnb: "bnb2",
     },
     {
       today: "Orders In Progess",
       title: data.filter((ord) => ord.state != "DELIVERED").length,
-      persent: "+20%",
       bnb: "redtext",
     },
     {
       today: "Total Revenue",
       title: "$13,200",
-      persent: "10%",
       bnb: "bnb2",
     },
   ];

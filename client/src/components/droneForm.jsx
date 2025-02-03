@@ -1,6 +1,7 @@
 import React from "react";
-import { Button, Form, Input, Space } from "antd";
+import { Button, Form, Input, InputNumber, Space } from "antd";
 import { useNavigate } from "react-router-dom";
+import "../styles/droneForm.css";
 
 const layout = {
   labelCol: {
@@ -76,9 +77,18 @@ const DroneForm = () => {
             {
               required: true,
             },
+            {
+              type: "number",
+              max: 1000,
+              message: "Weight Limit should be less than 1000",
+            },
           ]}
         >
-          <Input placeholder="Enter in grams" type="Number" />
+          <InputNumber
+            placeholder="Enter in grams"
+            type="Number"
+            className="drone-input"
+          />
         </Form.Item>
         <Form.Item
           name="batteryCapacity"
@@ -87,9 +97,19 @@ const DroneForm = () => {
             {
               required: true,
             },
+            {
+              type: "number",
+              min: 2000,
+              max: 10000,
+              message: "Battery Capacity must be between 2,000 and 10,000",
+            },
           ]}
         >
-          <Input placeholder="Enter in mAh" type="Number" />
+          <InputNumber
+            placeholder="Enter in mAh"
+            type="Number"
+            className="drone-input"
+          />
         </Form.Item>
         <Form.Item
           name="batteryLevel"
@@ -99,14 +119,18 @@ const DroneForm = () => {
               required: true,
             },
             {
-              type: "Number",
+              type: "number",
               min: 0,
               max: 100,
               message: "Battery level must be between 0 and 100",
             },
           ]}
         >
-          <Input placeholder="Enter current battery level in %" type="Number" />
+          <InputNumber
+            placeholder="Enter current battery level in %"
+            type="Number"
+            className="drone-input"
+          />
         </Form.Item>
         <Form.Item {...tailLayout}>
           <Space>

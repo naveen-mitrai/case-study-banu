@@ -84,6 +84,19 @@ const drainDroneBattery = async () => {
   }
 };
 
+router.patch("/:id", async (req, res) => {
+  const droneID = req.params.id;
+  const drone = req.body;
+  try {
+    // Update drone state
+    await Drone.updateOne({ id: droneID }, { $set: { state: drone.state } });
+    return res.status(200).json({ success: true });
+  } catch (error) {
+    console.log("Error in Update drone: ", error.message);
+    return res.status(500).json({ success: false, message: "Server Error" });
+  }
+});
+
 setInterval(drainDroneBattery, 60000);
 
 export default router;
